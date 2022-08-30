@@ -58,7 +58,9 @@ public class TicketRepo {
     public boolean removeCheck(int id) {
         // проверка, что объект с таким id существует
         for (Ticket randomTicket : repo) {
-            return randomTicket.getId() == id ? true : false;
+            if ( randomTicket.getId() == id) {
+                return true;
+            }
         }
         return false;
     }
