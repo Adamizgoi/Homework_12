@@ -2,8 +2,10 @@ package ru.netology.homework.tiсket;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import ru.netology.homework.tiсket.comparators.TicketTimeComparator;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 @AllArgsConstructor
 public class TicketManager {
@@ -25,9 +27,9 @@ public class TicketManager {
     }
 
     // выдача билетов от низкой цены до высокой (при совпадении аэропортов вылета и прилета)
-    public Ticket[] findAll(String from, String to) {
+    public Ticket[] findAll(String from, String to, Comparator<Ticket> comparator) {
         Ticket[] searchResult = searchByFromTo(from, to);
-        Arrays.sort(searchResult);
+        Arrays.sort(searchResult, comparator);
 
         return searchResult;
     }

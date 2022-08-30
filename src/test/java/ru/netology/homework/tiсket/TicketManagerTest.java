@@ -3,19 +3,23 @@ package ru.netology.homework.tiсket;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.homework.tiсket.comparators.TicketPriceComparator;
+import ru.netology.homework.tiсket.comparators.TicketTimeComparator;
 
 public class TicketManagerTest {
     TicketRepo repo = new TicketRepo();
     TicketManager manager = new TicketManager(repo);
+    TicketTimeComparator timeComparator = new TicketTimeComparator();
+    TicketPriceComparator priceComparator = new TicketPriceComparator();
 
     Ticket ticket1 = new Ticket(1, 100, "ARH", "ASF", 1010);
     Ticket ticket2 = new Ticket(2, 110, "ARH", "GUW", 201);
     Ticket ticket3 = new Ticket(3, 20109, "ATH", "ASF", 545);
     Ticket ticket4 = new Ticket(4, 40123, "SCO", "GZP", 567);
-    Ticket ticket5 = new Ticket(5, 4578, "ARH", "ASF", 5788);
-    Ticket ticket6 = new Ticket(6, 45547, "ARH", "ASF", 3467);
+    Ticket ticket5 = new Ticket(5, 4578, "ARH", "ASF", 120);
+    Ticket ticket6 = new Ticket(6, 45547, "ARH", "ASF", 2509);
     Ticket ticket7 = new Ticket(7, 459970, "ARH", "AZN", 2345);
-    Ticket ticket8 = new Ticket(8, 4578, "ARH", "ASF", 5678);
+    Ticket ticket8 = new Ticket(8, 4578, "ARH", "ASF", 120);
     Ticket ticket9error = new Ticket(0, 4567, "ARH", "GZP", 34567);
 
     @BeforeEach
@@ -65,13 +69,13 @@ public class TicketManagerTest {
     @Test
     public void shouldSearchByArrivalAndDepartureAndShowFromMinCostToMax() {
         Ticket[] expected = { ticket1, ticket5, ticket8, ticket6};
-        Ticket[] actual = manager.findAll("ARH", "ASF");
+        Ticket[] actual = manager.findAll("ARH", "ASF", priceComparator);
 
         Assertions.assertArrayEquals(expected, actual);
     }
 
     @Test
-    public void shouldNotCrashIfSearchByWithEmptyRepo() {
+    public void shouldNotCrashIfSearchByPriceComparatorWithEmptyRepo() {
         manager.removeById(1);
         manager.removeById(2);
         manager.removeById(3);
@@ -82,7 +86,7 @@ public class TicketManagerTest {
         manager.removeById(8);
 
         Ticket[] expected = {};
-        Ticket[] actual = manager.findAll("ARH", "ASF");
+        Ticket[] actual = manager.findAll("ARH", "ASF", priceComparator);
 
         Assertions.assertArrayEquals(expected, actual);
     }
@@ -95,7 +99,7 @@ public class TicketManagerTest {
         manager.removeById(8);
 
         Ticket[] expected = {};
-        Ticket[] actual = manager.findAll("ARH", "ASF");
+        Ticket[] actual = manager.findAll("ARH", "ASF", priceComparator);
 
         Assertions.assertArrayEquals(expected, actual);
     }
@@ -104,7 +108,7 @@ public class TicketManagerTest {
     public void shouldNotSearchIfNameOfAirportConsistMoreLettersThanFullWord() {
 
         Ticket[] expected = {};
-        Ticket[] actual = manager.findAll("ARHS", "ASFO");
+        Ticket[] actual = manager.findAll("ARHS", "ASFO", priceComparator);
 
         Assertions.assertArrayEquals(expected, actual);
     }
@@ -113,7 +117,7 @@ public class TicketManagerTest {
     public void shouldNotSearchIfMarchOnlyDepartureAirport() {
 
         Ticket[] expected = {};
-        Ticket[] actual = manager.findAll("ARH", "RANDOM");
+        Ticket[] actual = manager.findAll("ARH", "RANDOM", priceComparator);
 
         Assertions.assertArrayEquals(expected, actual);
     }
@@ -122,7 +126,45 @@ public class TicketManagerTest {
     public void shouldNotSearchIfMarchOnlyArrivalAirport() {
 
         Ticket[] expected = {};
-        Ticket[] actual = manager.findAll("RANDOM", "ASF");
+        Ticket[] actual = manager.findAll("RANDOM", "ASF", priceComparator);
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldSearchByFlyTimeAndShowFromMinCostToMax() {
+        Ticket[] expected = { ticket5, ticket8, ticket1, ticket6};
+        Ticket[] actual = manager.findAll("ARH", "ASF", timeComparator);
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotCrashIfSearchByTimeComparatorWithEmptyRepo() {
+        manager.removeById(1);
+        manager.removeById(2);
+        manager.removeById(3);
+        manager.removeById(4);
+        manager.removeById(5);
+        manager.removeById(6);
+        manager.removeById(7);
+        manager.removeById(8);
+
+        Ticket[] expected = {};
+        Ticket[] actual = manager.findAll("ARH", "ASF", timeComparator);
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotCrashIfSearchByTimeComparatorWithRepoWithoutTicketsNeeded() {
+        manager.removeById(1);
+        manager.removeById(5);
+        manager.removeById(6);
+        manager.removeById(8);
+
+        Ticket[] expected = {};
+        Ticket[] actual = manager.findAll("ARH", "ASF", timeComparator);
 
         Assertions.assertArrayEquals(expected, actual);
     }
